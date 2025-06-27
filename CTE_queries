@@ -1,0 +1,32 @@
+/* some queries example using CTE*/
+/* consider tables.sql for tables */ 
+
+1.CTE to Get Students with Their Department Names.
+    WITH StudentDept AS (
+      SELECT s.student_id,s.student_name,d.dept_name FROM 
+      students s JOIN department d ON s.dept_id = d.dept_id)
+    SELECT * FROM StudentDept;
+
+2.CTE to Find Total Number of Students.
+    WITH TotalStudents AS (
+      SELECT COUNT(*) AS total FROM students)
+    SELECT * FROM TotalStudents;
+
+3.CTE to Find Students Without a Department.
+    WITH NoDeptStudents AS (
+        SELECT * FROM students WHERE dept_id IS NULL)
+    SELECT * FROM NoDeptStudents;
+
+4.CTE to Count Students per Department.
+    WITH StudentCounts AS (
+      SELECT dept_id, COUNT(*) AS student_count
+      FROM studentsGROUP BY dept_id  )
+  SELECT sc.dept_id, d.dept_name, sc.student_count
+  FROM StudentCounts sc
+  JOIN department d ON sc.dept_id = d.dept_id;
+
+5.CTE to Get First 5 Students by Name Alphabetically.
+    WITH OrderedStudents AS (
+      SELECT * FROM students ORDER BY student_name LIMIT 5)
+    SELECT * FROM OrderedStudents;
+
