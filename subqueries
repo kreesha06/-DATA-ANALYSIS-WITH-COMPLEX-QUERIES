@@ -1,0 +1,83 @@
+1. Single Row Subquery:  /*Returns one row — used with =, <, > etc.*/
+  SELECT student_name 
+  FROM students 
+  WHERE dept_id = (
+    SELECT dept_id 
+    FROM department 
+    WHERE dept_name = 'Science'
+  );
+
+2.Multiple Row Subquery:  /*Returns more than one row — used with IN.*/
+  SELECT student_name 
+  FROM students 
+  WHERE dept_id IN (
+    SELECT dept_id 
+    FROM department 
+    WHERE dept_name LIKE '%Science%'
+  );
+
+3. Multiple Column Subquery:  /*Returns multiple columns — used in comparisons*/
+  SELECT student_id, student_name 
+  FROM students 
+  WHERE (dept_id, student_name) IN (
+    SELECT dept_id, 'Aman' 
+    FROM department
+  );
+
+4.Correlated Subquery:  /*Depends on the outer query row — runs row-by-row.*/
+  SELECT student_name 
+  FROM students s 
+  WHERE EXISTS (
+    SELECT 1 
+    FROM department d 
+    WHERE d.dept_id = s.dept_id 
+    AND d.dept_name = 'Mathematics'
+  );
+
+5.Scalar Subquery:  /*Returns a single value (one row, one column).*/
+  SELECT student_name,
+       (SELECT dept_name FROM department WHERE dept_id = students.dept_id) AS department
+  FROM students;
+
+6. Subquery with ANY: /*Compares value with any value in subquery result.*/
+  SELECT student_name 
+  FROM students 
+  WHERE dept_id = ANY (
+    SELECT dept_id 
+    FROM department 
+    WHERE dept_name LIKE '%Math%'
+  );  
+
+  7.Nested Subqueries: /*(Subquery inside another subquery)
+Useful for multi-level filtering.*/
+    SELECT student_name 
+    FROM students 
+    WHERE dept_id = (
+      SELECT dept_id 
+      FROM department 
+      WHERE dept_name = (
+        SELECT dept_name 
+        FROM department 
+        WHERE dept_id = 2
+      )
+    );
+
+8.subquery with exists/not exists:   /* Checks whether rows exist in the result of a subquery.*/
+(i) exists :
+  SELECT dept_id, dept_name
+  FROM department d
+  WHERE EXISTS (
+    SELECT 1
+    FROM students s
+    WHERE s.dept_id = d.dept_id
+    );
+
+(ii) not exists :
+  SELECT dept_id, dept_name
+  FROM department d
+  WHERE NOT EXISTS (
+    SELECT 1
+    FROM students s
+    WHERE s.dept_id = d.dept_id
+  );
+  
