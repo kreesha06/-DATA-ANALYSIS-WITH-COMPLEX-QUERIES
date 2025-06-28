@@ -1,0 +1,33 @@
+/* window function */
+
+1. Rank Students by Department:
+  SELECT student_id,student_name,dept_id,
+    RANK() OVER (PARTITION BY dept_id ORDER BY student_name) AS dept_rank
+  FROM students;
+
+2. Count Students in Each Department
+  SELECT student_id,student_name,dept_id,
+    COUNT(*) OVER (PARTITION BY dept_id) AS total_students_in_dept
+  FROM students;
+
+3. Assign Row Numbers to Students
+  SELECT student_id,student_name,
+    ROW_NUMBER() OVER (ORDER BY student_name) AS row_num
+  FROM students;
+
+4. Find First Student in Each Department
+  SELECT *FROM ( SELECT student_id,student_name,dept_id,
+        ROW_NUMBER() OVER (PARTITION BY dept_id ORDER BY student_name) AS row_num
+      FROM students
+    ) ranked
+  WHERE row_num = 1;
+
+5.Lag Function – Compare Each Student with Previous in Department
+  SELECT student_id,student_name,dept_id,
+    LAG(student_name) OVER (PARTITION BY dept_id ORDER BY student_name) AS previous_student
+  FROM students;
+
+6.Total Number of Students  /*on each row*/
+    SELECT student_id,student_name,dept_id,
+    COUNT(*) OVER () AS total_students
+  FROM students;
